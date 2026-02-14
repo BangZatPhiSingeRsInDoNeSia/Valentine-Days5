@@ -211,9 +211,17 @@ export default function DomeGallery({
   const lockedRadiusRef = useRef<number | null>(null);
 
   useEffect(() => {
-    const root = rootRef.current;
-    if (!root) return;
-    const ro = new ResizeObserver(entries => {
+  if (typeof window === "undefined") return;
+
+  const root = rootRef.current;
+  if (!root) return;
+
+  if (!('ResizeObserver' in window)) {
+    console.warn("ResizeObserver not supported");
+    return;
+  }
+
+  const ro = new ResizeObserver(entries => {
       const cr = entries[0].contentRect;
       const w = Math.max(1, cr.width),
         h = Math.max(1, cr.height);
